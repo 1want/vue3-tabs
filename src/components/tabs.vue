@@ -1,59 +1,125 @@
 <template>
   <div class="tabs-content">
-    <div class="pre" @click="pre" :disabled="current >= index">
+    <div
+      class="pre"
+      @click="currentIndex < index && pre()"
+      :class="currentIndex >= index && 'is-disabled'"
+    >
       <slot name="pre">
-        <img src="../assets/images/arrow.png" alt="" />
+        <ArrowIcon />
       </slot>
     </div>
     <div class="tabs-box" ref="boxRef">
       <ul class="tabs" ref="tabsRef">
-        <li class="tab" v-for="item of list" :key="item.name">
+        <li
+          class="tab"
+          v-for="(item, index) of list"
+          :key="item.name"
+          @click="handleClick(item, index)"
+          :class="current === index && 'is-active'"
+        >
           {{ item.name }}
+          <span
+            @click.stop="close(item, index)"
+            class="close-icon"
+            v-if="showIcon"
+          >
+            x
+          </span>
         </li>
       </ul>
     </div>
-    <div class="next" @click="next" :disabled="current === 0">
+    <div
+      class="next"
+      @click="currentIndex !== 0 && next()"
+      :class="currentIndex === 0 && 'is-disabled'"
+    >
       <slot name="next">
-        <img src="../assets/images/arrow.png" alt="" />
+        <ArrowIcon />
       </slot>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue'
+import ArrowIcon from './arrow-icon.vue'
+import {
+  computed,
+  getCurrentInstance,
+  onMounted,
+  onUpdated,
+  ref,
+  watch,
+  watchEffect
+} from 'vue'
 
 interface Props {
   list: any[]
+  jump?: boolean
+  showIcon?: boolean
 }
-
 const props = defineProps<Props>()
-const tabsRef = ref(null)
-const boxRef = ref(null)
-const boxWidth = ref(0)
+const emits = defineEmits(['handleClick', 'close'])
+
+const tabsRef = ref<HTMLElement>()
+const boxRef = ref<HTMLElement>()
+const boxWidth = ref<number>()
 const index = ref(0)
+const currentIndex = ref(0)
 const current = ref(0)
+const router = getCurrentInstance()!.appContext.config.globalProperties.$router
 
 onMounted(() => {
-  boxWidth.value = boxRef.value.clientWidth
-  index.value = Math.floor(tabsRef.value.scrollWidth / boxRef.value.clientWidth)
+  boxWidth.value = boxRef.value!.clientWidth
+  getBoxWidth()
 })
 
+const getBoxWidth = () => {
+  index.value = Math.floor(tabsRef.value!.scrollWidth / boxWidth.value!)
+}
+
 const pre = () => {
-  current.value++
-  tabsRef.value.style.transform = `translateX(-${
-    current.value * boxWidth.value
+  currentIndex.value++
+  tabsRef.value!.style.transform = `translateX(-${
+    currentIndex.value * boxWidth.value!
   }px)`
 }
 
 const next = () => {
-  current.value--
-  tabsRef.value.style.transform = `translateX(-${
-    current.value * boxWidth.value
+  currentIndex.value--
+  tabsRef.value!.style.transform = `translateX(-${
+    currentIndex.value * boxWidth.value!
   }px)`
 }
+
+const handleClick = (item: any, index: number) => {
+  emits('handleClick', item)
+  props.jump && router.push(item?.url)
+  current.value = index
+}
+
+const close = (item: any, index: number) => {
+  emits('close', item)
+  props.list.splice(index, 1)
+}
+
+watch(
+  props.list,
+  (newV, oldV) => {
+    getBoxWidth()
+    if (index.value > currentIndex.value) {
+      pre()
+    }
+    // if (index.value < currentIndex.value) {
+    //   next()
+    // }
+  },
+  {
+    flush: 'post'
+  }
+)
 </script>
 
-<style scoped>
+<style>
 @import url('../assets/css/tabs.css');
 </style>

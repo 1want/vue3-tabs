@@ -1,8 +1,20 @@
 {
-  "name": "vite-project",
-  "private": true,
-  "version": "0.0.0",
+  "name": "v3-tabs",
+  "private": false,
+  "version": "0.0.1",
   "type": "module",
+  "author": "iwant",
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/v3-tabs.js",
+  "module": "./lib/v3-tabs.js",
+  "exports": {
+    ".": {
+      "import": "./lib/v3-tabs.js"
+    }
+  },
   "scripts": {
     "serve": "vite --open --port=8082",
     "build": "vue-tsc && vite build",

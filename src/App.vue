@@ -1,13 +1,7 @@
 <template>
   <div class="content">
-    <Tabs :list="arr"></Tabs>
+    <Tabs :list="arr" @handleClick="handleClick" @close="close" />
   </div>
-
-  <!-- <tabs>
-      <tab-item>1</tab-item>
-      <tab-item>2</tab-item>
-      <tab-item>3</tab-item>
-    </tabs> -->
 
   <button @click="add">add</button>
 </template>
@@ -66,14 +60,25 @@ const add = () => {
   })
   num++
 }
+
+const handleClick = item => {
+  console.log(item)
+}
+
+const close = () => {
+  console.log('c')
+}
 </script>
 
-<style scoped>
+<style>
 button {
   margin-top: 50px;
 }
 .content {
-  width: 700px;
+  width: 680px;
   height: 100%;
+}
+.tab {
+  width: 120px !important;
 }
 </style>

@@ -2,14 +2,13 @@
   display: flex;
   align-items: center;
   text-align: center;
-  background: #1e5ac2;
-  color: #fff;
+  border: 1px solid #e9e6e6;
 }
 .tabs-content .tabs-box {
   flex: 1;
   overflow: hidden;
-  border-left: 1px solid #f0eeee;
-  border-right: 1px solid #f0eeee;
+  border-left: 1px solid #e9e6e6;
+  border-right: 1px solid #e9e6e6;
   box-sizing: border-box;
   height: 42px;
 }
@@ -20,7 +19,26 @@
 .tabs-content .tab {
   min-width: 100px;
   line-height: 42px;
-  border-right: 1px solid #f0eeee;
+  border-right: 1px solid #e9e6e6;
+  position: relative;
+}
+.tabs-content .tab:hover {
+  background: #5b56df;
+  color: #fff;
+  cursor: pointer;
+}
+.tabs-content .tab:hover .close-icon {
+  visibility: visible;
+}
+.tabs-content .tab .close-icon {
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  visibility: hidden;
+}
+.tabs-content .is-active {
+  background: #5b56df;
+  color: #fff;
 }
 .tabs-content .pre,
 .tabs-content .next {
@@ -35,11 +53,12 @@
   line-height: 42px;
   height: 42px;
 }
-.tabs-content .next img {
-  transform: rotate(180deg);
+.tabs-content .is-disabled {
+  cursor: not-allowed;
+  opacity: 0.2;
 }
-.tabs-content img {
-  width: 20px;
+.tabs-content .next .icon {
+  transform: rotate(180deg);
 }
 .tabs-content ul,
 .tabs-content li {
