@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <Tabs :list="arr" @handleClick="handleClick" @close="close" />
+    <Tabs :list="arr" showIcon />
   </div>
 
   <button @click="add">add</button>
@@ -32,24 +32,12 @@ const arr = ref([
     url: 'b'
   },
   {
-    name: 'li',
-    url: 'c'
+    name: 'jack',
+    url: 'a'
   },
   {
     name: 'walt',
     url: 'b'
-  },
-  {
-    name: 'li',
-    url: 'c'
-  },
-  {
-    name: 'walt',
-    url: 'b'
-  },
-  {
-    name: 'li',
-    url: 'c'
   }
 ])
 let num = 0
@@ -75,10 +63,7 @@ button {
   margin-top: 50px;
 }
 .content {
-  width: 680px;
+  width: 682px;
   height: 100%;
-}
-.tab {
-  width: 120px !important;
 }
 </style>

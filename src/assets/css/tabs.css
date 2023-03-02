@@ -17,10 +17,12 @@
   transition: all 0.6s ease-in-out;
 }
 .tabs-content .tab {
+  width: 100px;
   min-width: 100px;
   line-height: 42px;
   border-right: 1px solid #e9e6e6;
   position: relative;
+  box-sizing: border-box;
 }
 .tabs-content .tab:hover {
   background: #5b56df;

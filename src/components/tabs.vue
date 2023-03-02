@@ -2,8 +2,8 @@
   <div class="tabs-content">
     <div
       class="pre"
-      @click="currentIndex < index && pre()"
-      :class="currentIndex >= index && 'is-disabled'"
+      @click="pre"
+      :class="(pageSize <= 1 || currentIndex >= pageSize - 1) && 'is-disabled'"
     >
       <slot name="pre">
         <ArrowIcon />
@@ -61,24 +61,32 @@ interface Props {
 const props = defineProps<Props>()
 const emits = defineEmits(['handleClick', 'close'])
 
+const tabRef = ref<HTMLElement>()
 const tabsRef = ref<HTMLElement>()
 const boxRef = ref<HTMLElement>()
 const boxWidth = ref<number>()
-const index = ref(0)
+const pageSize = ref(0)
 const currentIndex = ref(0)
 const current = ref(0)
-const router = getCurrentInstance()!.appContext.config.globalProperties.$router
+// const router = getCurrentInstance()!.appContext.config.globalProperties.$router
+
+// console.log(getCurrentInstance()!)
 
 onMounted(() => {
-  boxWidth.value = boxRef.value!.clientWidth
+  boxWidth.value = boxRef.value!.offsetWidth
   getBoxWidth()
 })
 
 const getBoxWidth = () => {
-  index.value = Math.floor(tabsRef.value!.scrollWidth / boxWidth.value!)
+  let cWidth = 0
+  for (let i of tabsRef.value.children) {
+    cWidth += i.offsetWidth
+  }
+  pageSize.value = Math.ceil(cWidth / boxWidth.value!)
 }
 
 const pre = () => {
+  if (!(pageSize.value > 1 && currentIndex.value < pageSize.value)) return
   currentIndex.value++
   tabsRef.value!.style.transform = `translateX(-${
     currentIndex.value * boxWidth.value!
@@ -94,7 +102,7 @@ const next = () => {
 
 const handleClick = (item: any, index: number) => {
   emits('handleClick', item)
-  props.jump && router.push(item?.url)
+  // props.jump && router.push(item?.url)
   current.value = index
 }
 
@@ -107,12 +115,9 @@ watch(
   props.list,
   (newV, oldV) => {
     getBoxWidth()
-    if (index.value > currentIndex.value) {
+    if (pageSize.value > 1 && pageSize.value > currentIndex.value) {
       pre()
     }
-    // if (index.value < currentIndex.value) {
-    //   next()
-    // }
   },
   {
     flush: 'post'
