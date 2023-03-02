@@ -42,6 +42,18 @@ const arr = ref([
 </style>
 ```
 
+### 自定义图标
+
+```vue
+<template>
+  <Tabs :list="arr" showIcon>
+    <template v-slot:pre>pre</template>
+    <template v-slot:next>next</template>
+    <template v-slot:closeIcon>close</template>
+  </Tabs>
+</template>
+```
+
 ### API
 
 #### Props

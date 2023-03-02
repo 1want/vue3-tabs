@@ -30,15 +30,15 @@ const arr = ref([
   {
     name: 'walt',
     url: 'b'
-  },
-  {
-    name: 'jack',
-    url: 'a'
-  },
-  {
-    name: 'walt',
-    url: 'b'
   }
+  // {
+  //   name: 'jack',
+  //   url: 'a'
+  // },
+  // {
+  //   name: 'walt',
+  //   url: 'b'
+  // }
 ])
 let num = 0
 const add = () => {

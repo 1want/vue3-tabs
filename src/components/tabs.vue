@@ -9,14 +9,15 @@
         <ArrowIcon />
       </slot>
     </div>
-    <div class="tabs-box" ref="boxRef">
+    <div class="tabs-box">
       <ul class="tabs" ref="tabsRef">
         <li
+          :style="{ minWidth: props.width || 100 + 'px' }"
           class="tab"
-          v-for="(item, index) of list"
-          :key="item.name"
-          @click="handleClick(item, index)"
           :class="current === index && 'is-active'"
+          v-for="(item, index) of list"
+          :key="index"
+          @click="handleClick(item, index)"
         >
           {{ item.name }}
           <span
@@ -24,7 +25,24 @@
             class="close-icon"
             v-if="showIcon"
           >
-            x
+            <slot name="closeIcon">
+              <svg
+                t="1677743443079"
+                class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="3618"
+                width="18"
+                height="18"
+              >
+                <path
+                  d="M558.933333 529.066667l285.866667 285.866666-29.866667 29.866667-285.866666-285.866667-285.866667 285.866667-29.866667-29.866667 285.866667-285.866666L213.333333 243.2l29.866667-29.866667 285.866667 285.866667L814.933333 213.333333l29.866667 29.866667-285.866667 285.866667z"
+                  fill="#ffffff"
+                  p-id="3619"
+                ></path>
+              </svg>
+            </slot>
           </span>
         </li>
       </ul>
@@ -32,7 +50,7 @@
     <div
       class="next"
       @click="currentIndex !== 0 && next()"
-      :class="currentIndex === 0 && 'is-disabled'"
+      :class="currentIndex <= 0 && 'is-disabled'"
     >
       <slot name="next">
         <ArrowIcon />
@@ -47,7 +65,6 @@ import {
   computed,
   getCurrentInstance,
   onMounted,
-  onUpdated,
   ref,
   watch,
   watchEffect
@@ -57,72 +74,68 @@ interface Props {
   list: any[]
   jump?: boolean
   showIcon?: boolean
+  width?: number
 }
 const props = defineProps<Props>()
 const emits = defineEmits(['handleClick', 'close'])
 
-const tabRef = ref<HTMLElement>()
 const tabsRef = ref<HTMLElement>()
-const boxRef = ref<HTMLElement>()
-const boxWidth = ref<number>()
 const pageSize = ref(0)
 const currentIndex = ref(0)
 const current = ref(0)
+let box: number
 // const router = getCurrentInstance()!.appContext.config.globalProperties.$router
 
-// console.log(getCurrentInstance()!)
+console.log(getCurrentInstance()!)
 
 onMounted(() => {
-  boxWidth.value = boxRef.value!.offsetWidth
   getBoxWidth()
+  box = tabsRef.value!.offsetWidth
 })
 
 const getBoxWidth = () => {
-  let cWidth = 0
-  for (let i of tabsRef.value.children) {
-    cWidth += i.offsetWidth
-  }
-  pageSize.value = Math.ceil(cWidth / boxWidth.value!)
+  let scrollWidth = props.list.length * (props.width || 100)
+  pageSize.value = Math.ceil(scrollWidth / box)
+  currentIndex.value = pageSize.value - 1
+  transform(currentIndex.value)
 }
 
 const pre = () => {
-  if (!(pageSize.value > 1 && currentIndex.value < pageSize.value)) return
+  if (!(pageSize.value > 1 && currentIndex.value < pageSize.value - 1)) return
   currentIndex.value++
-  tabsRef.value!.style.transform = `translateX(-${
-    currentIndex.value * boxWidth.value!
-  }px)`
+  transform(currentIndex.value)
 }
 
 const next = () => {
   currentIndex.value--
+  transform(currentIndex.value)
+}
+
+const transform = (index: number) => {
+  currentIndex.value = index
   tabsRef.value!.style.transform = `translateX(-${
-    currentIndex.value * boxWidth.value!
+    currentIndex.value * tabsRef.value!.offsetWidth
   }px)`
 }
 
 const handleClick = (item: any, index: number) => {
-  emits('handleClick', item)
+  emits('handleClick', item, index)
   // props.jump && router.push(item?.url)
   current.value = index
 }
 
 const close = (item: any, index: number) => {
-  emits('close', item)
   props.list.splice(index, 1)
+  if (current.value === 0 || current.value < index) return
+  current.value--
+  emits('close', item)
 }
 
-watch(
-  props.list,
-  (newV, oldV) => {
-    getBoxWidth()
-    if (pageSize.value > 1 && pageSize.value > currentIndex.value) {
-      pre()
-    }
-  },
-  {
-    flush: 'post'
-  }
-)
+watch(props.list, getBoxWidth)
+
+watch(current, (newV, oldV) => {
+  console.log(newV, oldV)
+})
 </script>
 
 <style>
