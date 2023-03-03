@@ -30,24 +30,7 @@
             class="close-icon"
             v-if="showIcon"
           >
-            <slot name="closeIcon">
-              <svg
-                t="1677743443079"
-                class="icon"
-                viewBox="0 0 1024 1024"
-                version="1.1"
-                xmlns="http://www.w3.org/2000/svg"
-                p-id="3618"
-                width="18"
-                height="18"
-              >
-                <path
-                  d="M558.933333 529.066667l285.866667 285.866666-29.866667 29.866667-285.866666-285.866667-285.866667 285.866667-29.866667-29.866667 285.866667-285.866666L213.333333 243.2l29.866667-29.866667 285.866667 285.866667L814.933333 213.333333l29.866667 29.866667-285.866667 285.866667z"
-                  fill="#ffffff"
-                  p-id="3619"
-                ></path>
-              </svg>
-            </slot>
+            <slot name="closeIcon">x</slot>
           </span>
         </li>
       </ul>
@@ -55,7 +38,7 @@
     <div
       class="next"
       @click="currentIndex !== 0 && next()"
-      :class="currentIndex <= 0 && 'is-disabled'"
+      :class="currentIndex === 0 && 'is-disabled'"
     >
       <slot name="next">
         <ArrowIcon />
@@ -66,14 +49,7 @@
 
 <script setup lang="ts">
 import ArrowIcon from './arrow-icon.vue'
-import {
-  computed,
-  getCurrentInstance,
-  onMounted,
-  ref,
-  watch,
-  watchEffect
-} from 'vue'
+import { getCurrentInstance, onMounted, ref, watch } from 'vue'
 
 interface Props {
   list: any[]
@@ -93,29 +69,23 @@ let box = 0
 let scrollWidth = 0
 // const router = getCurrentInstance()!.appContext.config.globalProperties.$router
 
-// console.log(getCurrentInstance)
-
 onMounted(() => {
-  box = tabsRef.value!.offsetWidth
-  getBoxWidth()
+  init()
 })
 
-const getBoxWidth = () => {
+const init = () => {
+  box = tabsRef.value!.offsetWidth
   scrollWidth = props.list.length * (props.width || 100)
   pageSize.value = Math.ceil(scrollWidth / box)
-  currentIndex.value = pageSize.value - 1
-  transform(currentIndex.value)
 }
 
 const pre = () => {
   if (!(pageSize.value > 1 && currentIndex.value < pageSize.value - 1)) return
-  currentIndex.value++
-  transform(currentIndex.value)
+  transform(++currentIndex.value)
 }
 
 const next = () => {
-  currentIndex.value--
-  transform(currentIndex.value)
+  transform(--currentIndex.value)
 }
 
 const transform = (index: number) => {
@@ -151,6 +121,13 @@ const close = (item: any, index: number) => {
   if (current.value === 0 || current.value < index) return
   current.value--
   emits('close', item)
+}
+
+const getBoxWidth = () => {
+  scrollWidth = props.list.length * (props.width || 100)
+  pageSize.value = Math.ceil(scrollWidth / box)
+  currentIndex.value = pageSize.value - 1
+  transform(currentIndex.value)
 }
 
 watch(props.list, getBoxWidth)
