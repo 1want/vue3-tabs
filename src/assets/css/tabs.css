@@ -32,8 +32,8 @@
   visibility: visible;
 }
 .tabs-content .tab .close-icon {
+  line-height: 18px;
   position: absolute;
-  top: -6px;
   right: 6px;
   visibility: hidden;
 }

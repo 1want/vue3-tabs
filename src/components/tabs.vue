@@ -10,7 +10,7 @@
       </slot>
     </div>
     <div class="tabs-box">
-      <ul class="tabs" ref="tabsRef">
+      <ul class="tabs" ref="tabsRef" @click="adaptive($event)">
         <li
           :style="{ minWidth: props.width || 100 + 'px' }"
           class="tab"
@@ -83,18 +83,19 @@ const tabsRef = ref<HTMLElement>()
 const pageSize = ref(0)
 const currentIndex = ref(0)
 const current = ref(0)
-let box: number
+let box = 0
+let scrollWidth = 0
 // const router = getCurrentInstance()!.appContext.config.globalProperties.$router
 
-console.log(getCurrentInstance()!)
+// console.log(getCurrentInstance)
 
 onMounted(() => {
-  getBoxWidth()
   box = tabsRef.value!.offsetWidth
+  getBoxWidth()
 })
 
 const getBoxWidth = () => {
-  let scrollWidth = props.list.length * (props.width || 100)
+  scrollWidth = props.list.length * (props.width || 100)
   pageSize.value = Math.ceil(scrollWidth / box)
   currentIndex.value = pageSize.value - 1
   transform(currentIndex.value)
@@ -118,6 +119,22 @@ const transform = (index: number) => {
   }px)`
 }
 
+const adaptive = (e: any) => {
+  if (pageSize.value <= 1) return
+  if (tabsRef.value!.offsetWidth - e.screenX + 40 < 100) {
+    currentIndex.value++
+    tabsRef.value!.style.transform = `translateX(-${
+      (currentIndex.value * tabsRef.value!.offsetWidth) / 2
+    }px)`
+  }
+  if (e.screenX - 40 < 100 && currentIndex.value !== 0) {
+    currentIndex.value = currentIndex.value - 1 || 1
+    tabsRef.value!.style.transform = `translateX(-${
+      (currentIndex.value * tabsRef.value!.offsetWidth) / 2
+    }px)`
+  }
+}
+
 const handleClick = (item: any, index: number) => {
   emits('handleClick', item, index)
   // props.jump && router.push(item?.url)
@@ -132,10 +149,6 @@ const close = (item: any, index: number) => {
 }
 
 watch(props.list, getBoxWidth)
-
-watch(current, (newV, oldV) => {
-  console.log(newV, oldV)
-})
 </script>
 
 <style>
