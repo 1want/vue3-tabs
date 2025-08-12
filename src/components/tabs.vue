@@ -1,138 +1,118 @@
 <template>
   <div class="tabs-content">
-    <div
-      class="pre"
-      @click="pre"
-      :class="(pageSize <= 1 || currentIndex >= pageSize - 1) && 'is-disabled'"
-    >
-      <slot name="pre">
-        <ArrowIcon />
-      </slot>
-    </div>
-    <div class="tabs-box">
-      <ul
-        class="tabs"
-        ref="tabsRef"
-        @click="adaptive($event)"
-        :style="{ transform: `translateX(-${Number(transformX) + 'px'})` }"
+    <div class="tabs">
+      <div
+        v-for="(item, index) in props.list"
+        :key="index"
+        :class="['tab', current === index && 'is-active']"
+        @click="handleClick(item, index)"
       >
-        <li
-          :style="{ minWidth: props.width || 100 + 'px' }"
-          class="tab"
-          :class="current === index && 'is-active'"
-          v-for="(item, index) of list"
-          :key="index"
-          @click="handleClick(item, index)"
+        {{ item.name }}
+        <svg
+          v-if="props.list.length > 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1024 1024"
+          class="icon"
+          @click.stop="close(item, index)"
         >
-          {{ item.name }}
-          <span
-            @click.stop="close(item, index)"
-            class="close-icon"
-            v-if="showIcon"
-          >
-            <slot name="closeIcon">x</slot>
-          </span>
-        </li>
-      </ul>
-    </div>
-    <div
-      class="next"
-      @click="currentIndex !== 0 && next()"
-      :class="currentIndex === 0 && 'is-disabled'"
-    >
-      <slot name="next">
-        <ArrowIcon />
-      </slot>
+          <path
+            style="font-size: 12px"
+            fill="currentColor"
+            d="M764.288 214.592 512 466.88 259.712 214.592a31.936 31.936 0 0 0-45.12 45.12L466.752 512 214.528 764.224a31.936 31.936 0 1 0 45.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0 0 45.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 1 0-45.12-45.184z"
+          ></path>
+        </svg>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ArrowIcon from './arrow-icon.vue'
-import { getCurrentInstance, onMounted, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 
+interface TabItem {
+  name: string
+}
 interface Props {
-  list: any[]
+  list: TabItem[]
   jump?: boolean
-  showIcon?: boolean
-  width?: number
+  modelValue?: number
 }
-const props = defineProps<Props>()
-const emits = defineEmits(['handleClick', 'close'])
+const props = withDefaults(defineProps<Props>(), {})
+const emits = defineEmits(['handleClick', 'close', 'update:list', 'update:modelValue'])
 
-const tabsRef = ref<HTMLElement>()
-const pageSize = ref(0)
-const currentIndex = ref(0)
-const current = ref(0)
-const transformX = ref(0)
-let box = 0
-let scrollWidth = 0
-// const router = getCurrentInstance()!.appContext.config.globalProperties.$router
+const current = ref<number>(Number.isFinite(props.modelValue) ? (props.modelValue as number) : 0)
 
-onMounted(() => {
-  init()
-})
-
-const init = () => {
-  box = tabsRef.value!.offsetWidth
-  scrollWidth = props.list.length * (props.width || 100)
-  pageSize.value = Math.ceil(scrollWidth / box)
+function clamp<T extends number>(val: T, min: number, max: number): T {
+  return Math.min(Math.max(val, min), max) as T
 }
 
-const pre = () => {
-  if (!(pageSize.value > 1 && currentIndex.value < pageSize.value - 1)) return
-  transform(++currentIndex.value)
-}
-
-const next = () => {
-  transform(--currentIndex.value)
-}
-
-const transform = (index: number) => {
-  transformX.value = index * tabsRef.value!.offsetWidth
-}
-
-const adaptive = (e: any) => {
-  // console.log(e.target.offsetLeft)
-  if (pageSize.value <= 1) return
-  if (tabsRef.value!.offsetWidth - e.screenX + 40 < 100) {
-    currentIndex.value++
-    transformX.value = (currentIndex.value * tabsRef.value!.offsetWidth) / 2
+// 受控激活索引变化
+watch(
+  () => props.modelValue,
+  val => {
+    if (typeof val === 'number' && Number.isFinite(val)) {
+      current.value = clamp(val, 0, Math.max(0, props.list.length - 1))
+    }
   }
-  if (e.screenX - 40 < 100 && currentIndex.value !== 0) {
-    currentIndex.value--
-    transformX.value =
-      ((currentIndex.value || 1) * tabsRef.value!.offsetWidth) / 2
-    return
-  }
-  if (e.screenX - 40 < 100 && currentIndex.value === 0) {
-    transformX.value = 0
-  }
-}
+)
 
-const handleClick = (item: any, index: number) => {
+function handleClick(item: TabItem, index: number) {
   emits('handleClick', item, index)
-  // props.jump && router.push(item?.url)
   current.value = index
+  emits('update:modelValue', index)
 }
 
-const close = (item: any, index: number) => {
-  props.list.splice(index, 1)
-  if (current.value === 0 || current.value < index) return
-  current.value--
-  emits('close', item)
-}
+function close(item: TabItem, index: number) {
+  const nextList = props.list.slice(0, index).concat(props.list.slice(index + 1))
+  emits('close', item, index)
+  emits('update:list', nextList)
 
-const getBoxWidth = () => {
-  scrollWidth = props.list.length * (props.width || 100)
-  pageSize.value = Math.ceil(scrollWidth / box)
-  currentIndex.value = pageSize.value - 1
-  transform(currentIndex.value)
+  if (current.value > index) current.value -= 1
+  current.value = clamp(current.value, 0, Math.max(0, nextList.length - 1))
 }
-
-watch(props.list, getBoxWidth)
 </script>
 
 <style>
-@import url('../assets/css/tabs.css');
+.icon {
+  width: 13px;
+  height: 13px;
+}
+.tabs-content {
+  height: 100%;
+  background: red;
+  overflow-x: scroll;
+}
+.tabs-content::-webkit-scrollbar {
+  height: 0;
+}
+
+.tabs-content .tabs {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  white-space: nowrap;
+}
+.tabs-content .tab {
+  position: relative;
+  cursor: pointer;
+  border: 1px solid #d8dce5;
+  color: #495060;
+  height: 28px;
+  line-height: 28px;
+  background: #fff;
+  padding: 0 8px;
+  font-size: 12px;
+  margin-right: 10px;
+}
+.tabs-content .tab:hover {
+  background-color: #409eff;
+  border-color: #409eff;
+  color: #fff;
+}
+
+.tabs-content .is-active {
+  background-color: #409eff;
+  border-color: #409eff;
+  color: #fff;
+}
 </style>

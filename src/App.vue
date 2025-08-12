@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <Tabs :list="arr" showIcon />
+    <Tabs v-model:list="arr" showIcon />
   </div>
 
   <button @click="add">add</button>
@@ -12,46 +12,22 @@ import { ref } from 'vue'
 
 const arr = ref([
   {
-    name: 'jack',
+    name: '系统设置',
     url: 'a'
   },
   {
-    name: 'walt',
+    name: '测试设置',
     url: 'b'
   },
   {
-    name: 'jack',
-    url: 'a'
-  },
-  {
-    name: 'walt',
-    url: 'b'
-  },
-  {
-    name: 'li',
+    name: '调整设置',
     url: 'c'
-  },
-  {
-    name: 'jack',
-    url: 'a'
-  },
-  {
-    name: 'walt',
-    url: 'b'
   }
-  // {
-  //   name: 'jack',
-  //   url: 'a'
-  // },
-  // {
-  //   name: 'walt',
-  //   url: 'b'
-  // }
 ])
 let num = 0
 const add = () => {
   arr.value.push({
-    name: num,
+    name: num + '',
     url: 'a'
   })
   num++
@@ -66,12 +42,17 @@ const close = () => {
 }
 </script>
 
-<style>
+<style scoped>
 button {
   margin-top: 50px;
 }
 .content {
   width: 682px;
-  height: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #eee;
+  /* overflow: hidden; */
 }
 </style>
