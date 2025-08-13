@@ -16,7 +16,7 @@ const arr = ref([
     url: 'a'
   },
   {
-    name: '测试设置',
+    name: '用户管理',
     url: 'b'
   },
   {

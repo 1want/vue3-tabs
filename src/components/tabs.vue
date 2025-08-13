@@ -10,10 +10,10 @@
         {{ item.name }}
         <svg
           v-if="props.list.length > 1"
+          @click.stop="close(index)"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1024 1024"
-          class="icon"
-          @click.stop="close(item, index)"
+          class="close-icon"
         >
           <path
             style="font-size: 12px"
@@ -27,92 +27,69 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 interface TabItem {
   name: string
 }
 interface Props {
   list: TabItem[]
-  jump?: boolean
-  modelValue?: number
 }
+const current = ref(0)
+
 const props = withDefaults(defineProps<Props>(), {})
-const emits = defineEmits(['handleClick', 'close', 'update:list', 'update:modelValue'])
+const emits = defineEmits(['handleClick', 'close'])
 
-const current = ref<number>(Number.isFinite(props.modelValue) ? (props.modelValue as number) : 0)
-
-function clamp<T extends number>(val: T, min: number, max: number): T {
-  return Math.min(Math.max(val, min), max) as T
-}
-
-// 受控激活索引变化
-watch(
-  () => props.modelValue,
-  val => {
-    if (typeof val === 'number' && Number.isFinite(val)) {
-      current.value = clamp(val, 0, Math.max(0, props.list.length - 1))
-    }
-  }
-)
-
-function handleClick(item: TabItem, index: number) {
-  emits('handleClick', item, index)
+const handleClick = (item: TabItem, index: number) => {
   current.value = index
-  emits('update:modelValue', index)
+  emits('handleClick', item, index)
 }
 
-function close(item: TabItem, index: number) {
-  const nextList = props.list.slice(0, index).concat(props.list.slice(index + 1))
-  emits('close', item, index)
-  emits('update:list', nextList)
-
-  if (current.value > index) current.value -= 1
-  current.value = clamp(current.value, 0, Math.max(0, nextList.length - 1))
+const close = (index: number) => {
+  emits('close', index)
 }
 </script>
 
-<style>
-.icon {
-  width: 13px;
-  height: 13px;
-}
+<style lang="scss">
 .tabs-content {
   height: 100%;
-  background: red;
   overflow-x: scroll;
-}
-.tabs-content::-webkit-scrollbar {
-  height: 0;
-}
-
-.tabs-content .tabs {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  white-space: nowrap;
-}
-.tabs-content .tab {
-  position: relative;
-  cursor: pointer;
-  border: 1px solid #d8dce5;
-  color: #495060;
-  height: 28px;
-  line-height: 28px;
-  background: #fff;
-  padding: 0 8px;
-  font-size: 12px;
-  margin-right: 10px;
-}
-.tabs-content .tab:hover {
-  background-color: #409eff;
-  border-color: #409eff;
-  color: #fff;
-}
-
-.tabs-content .is-active {
-  background-color: #409eff;
-  border-color: #409eff;
-  color: #fff;
+  &::-webkit-scrollbar {
+    height: 0;
+  }
+  .tabs {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    white-space: nowrap;
+  }
+  .tab {
+    position: relative;
+    cursor: pointer;
+    border: 1px solid #d8dce5;
+    color: #495060;
+    height: 28px;
+    line-height: 28px;
+    background: #fff;
+    padding: 0 8px;
+    font-size: 12px;
+    margin-right: 10px;
+    &:hover {
+      background-color: #409eff;
+      color: #fff;
+    }
+    .close-icon {
+      width: 13px;
+      height: 13px;
+      &:hover {
+        border-radius: 2px;
+        background: #0000001b;
+      }
+    }
+  }
+  .is-active {
+    background-color: #409eff;
+    color: #fff;
+  }
 }
 </style>
