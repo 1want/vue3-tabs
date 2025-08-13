@@ -7,22 +7,18 @@ settings:
 importers:
 
   .:
-    dependencies:
-      vue:
-        specifier: ^3.2.45
-        version: 3.5.18(typescript@4.9.5)
     devDependencies:
       '@vitejs/plugin-vue':
-        specifier: ^4.0.0
+        specifier: ^4.6.2
         version: 4.6.2(vite@4.5.14(sass@1.90.0))(vue@3.5.18(typescript@4.9.5))
       sass:
         specifier: ^1.90.0
         version: 1.90.0
       typescript:
-        specifier: ^4.9.3
+        specifier: ^4.9.5
         version: 4.9.5
       vite:
-        specifier: ^4.1.0
+        specifier: ^4.5.14
         version: 4.5.14(sass@1.90.0)
       vite-plugin-css-injected-by-js:
         specifier: ^3.5.2
@@ -30,8 +26,11 @@ importers:
       vite-plugin-dts:
         specifier: ^4.5.4
         version: 4.5.4(rollup@3.29.5)(typescript@4.9.5)(vite@4.5.14(sass@1.90.0))
+      vue:
+        specifier: ^3.5.18
+        version: 3.5.18(typescript@4.9.5)
       vue-tsc:
-        specifier: ^1.0.24
+        specifier: ^1.8.27
         version: 1.8.27(typescript@4.9.5)
 
 packages:
@@ -193,8 +192,8 @@ packages:
     resolution: {integrity: sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==}
     engines: {node: 20 || >=22}
 
-  '@jridgewell/sourcemap-codec@1.5.4':
-    resolution: {integrity: sha512-VT2+G1VQs/9oz078bLrYbecdZKs912zQlkelYpuf+SXF+QvZDYJlbx/LSx+meSAwdDFnF8FVXW92AVjjkVmgFw==}
+  '@jridgewell/sourcemap-codec@1.5.5':
+    resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
   '@microsoft/api-extractor-model@7.30.7':
     resolution: {integrity: sha512-TBbmSI2/BHpfR9YhQA7nH0nqVmGgJ0xH0Ex4D99/qBDAUpnhA2oikGmdXanbw9AWWY/ExBYIpkmY8dBHdla3YQ==}
@@ -883,7 +882,7 @@ snapshots:
     dependencies:
       '@isaacs/balanced-match': 4.0.1
 
-  '@jridgewell/sourcemap-codec@1.5.4': {}
+  '@jridgewell/sourcemap-codec@1.5.5': {}
 
   '@microsoft/api-extractor-model@7.30.7':
     dependencies:
@@ -1307,7 +1306,7 @@ snapshots:
 
   magic-string@0.30.17:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.4
+      '@jridgewell/sourcemap-codec': 1.5.5
 
   micromatch@4.0.8:
     dependencies:

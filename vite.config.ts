@@ -13,7 +13,7 @@ export default defineConfig({
   build: {
     // cssCodeSplit: true,
     rollupOptions: {
-      external: ['vue'],
+      external: [/^vue(\/.*)?$/],
       output: {
         globals: {
           vue: 'Vue'
