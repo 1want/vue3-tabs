@@ -70,8 +70,6 @@ const centerActiveTab = (preferIndex?: number) => {
 
   const desired = Math.max(0, Math.min(content.scrollWidth - content.clientWidth, content.scrollLeft + delta))
 
-  console.log(desired)
-
   if (Math.abs(desired - content.scrollLeft) < 2) return
   content.scrollTo({ left: desired, behavior: 'smooth' })
 }
