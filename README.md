@@ -21,7 +21,7 @@ or pnpm
 import Tabs from 'v3-tabs'
 import { ref } from 'vue'
 
-const arr = ref([
+const arr = [
   {
     name: 'a'
   },
@@ -31,7 +31,7 @@ const arr = ref([
   {
     name: 'c'
   }
-])
+]
 </script>
 
 <style>
@@ -42,16 +42,38 @@ const arr = ref([
 </style>
 ```
 
-### 自定义图标
+### 自定义高亮规则
 
 ```vue
 <template>
-  <Tabs :list="arr" showIcon>
-    <template v-slot:pre>pre</template>
-    <template v-slot:next>next</template>
-    <template v-slot:closeIcon>close</template>
-  </Tabs>
+  <div class="content">
+    <Tabs :active="item => item.path === route.path" :list="arr" />
+  </div>
 </template>
+
+<script setup>
+const arr = [
+  {
+    path: '/home',
+    name: '首页'
+  },
+  {
+    path: '/work-set',
+    name: '工作设置'
+  },
+  {
+    path: '/system-set',
+    name: '系统设置'
+  }
+]
+</script>
+
+<style>
+.content {
+  width: 300px;
+  height: 100%;
+}
+</style>
 ```
 
 ### API

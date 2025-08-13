@@ -28,14 +28,8 @@
 
 <script setup lang="ts">
 import { ref, watch, nextTick, onMounted, onUpdated } from 'vue'
+import type { TabItem, Props } from '../types'
 
-interface TabItem {
-  name: string
-}
-interface Props {
-  list: TabItem[]
-  active?: (item: TabItem) => boolean
-}
 const current = ref(0)
 
 const props = withDefaults(defineProps<Props>(), {})
