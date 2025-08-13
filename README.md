@@ -58,11 +58,10 @@ const arr = ref([
 
 #### Props
 
-| 参数     | 说明                 | 类型     | 默认值 |
-| -------- | -------------------- | -------- | ------ |
-| list     | 渲染的 tab           | object[] |        |
-| showIcon | 是否显示关闭按钮     | boolean  | false  |
-| jump     | 在点击时自动路由跳转 | boolean  | false  |
+| 参数   | 说明           | 类型     | 默认值                             |
+| ------ | -------------- | -------- | ---------------------------------- |
+| list   | 渲染的 tab     | object[] |                                    |
+| active | 自定义高亮规则 | Function | (index) => current.value === index |
 
 #### Events
 
