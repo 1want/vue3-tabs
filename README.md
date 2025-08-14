@@ -60,6 +60,4 @@ const arr = [
 
 #### 预览视频
 
-<video controls  muted playsinline src="video.mp4" title="Title">
- <a href="video.mp4">观看视频</a>
-</video>
+[![Tabs 演示](video.mp4)]
