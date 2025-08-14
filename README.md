@@ -58,10 +58,4 @@ const arr = [
 | handleClick | 点击 tab 事件回调    | function |        |
 | close       | 点击关闭按钮事件回调 | function |        |
 
-#### 预览视频
-
-<video src="./src/assets/video.mp4" controls muted playsinline width="640">
-  <a href="./src/assets/video.mp4">观看视频</a>
-</video>
-
 [![Tabs 演示](./src/assets/video.mp4)]
