@@ -1,7 +1,7 @@
 {
   "name": "v3-tabs",
   "private": false,
-  "version": "0.0.52",
+  "version": "0.0.53",
   "type": "module",
   "author": "iwant",
   "license": "MIT",
@@ -11,13 +11,12 @@
   "module": "./lib/v3-tabs.js",
   "exports": {
     ".": {
-      "import": "./lib/v3-tabs.js",
-      "types": "./lib/index.d.ts"
+      "import": "./lib/v3-tabs.js"
     }
   },
   "scripts": {
     "serve": "vite --open --port=8082",
-    "build": "vue-tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
