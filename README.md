@@ -42,40 +42,6 @@ const arr = [
 </style>
 ```
 
-### 自定义高亮规则
-
-```vue
-<template>
-  <div class="content">
-    <Tabs :active="item => item.path === route.path" :list="arr" />
-  </div>
-</template>
-
-<script setup>
-const arr = [
-  {
-    path: '/home',
-    name: '首页'
-  },
-  {
-    path: '/work-set',
-    name: '工作设置'
-  },
-  {
-    path: '/system-set',
-    name: '系统设置'
-  }
-]
-</script>
-
-<style>
-.content {
-  width: 300px;
-  height: 100%;
-}
-</style>
-```
-
 ### API
 
 #### Props
@@ -91,3 +57,7 @@ const arr = [
 | ----------- | -------------------- | -------- | ------ |
 | handleClick | 点击 tab 事件回调    | function |        |
 | close       | 点击关闭按钮事件回调 | function |        |
+
+#### 预览视频
+
+<video controls src="Jietu20250814-113130-HD.mp4" title="Title"></video>
