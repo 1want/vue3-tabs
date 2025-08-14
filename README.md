@@ -60,4 +60,6 @@ const arr = [
 
 #### 预览视频
 
-<video controls src="Jietu20250814-113130-HD.mp4" title="Title"></video>
+<video controls  muted playsinline src="video.mp4" title="Title">
+ <a href="video.mp4">观看视频</a>
+</video>
